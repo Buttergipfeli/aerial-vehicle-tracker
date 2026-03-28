@@ -13,3 +13,6 @@ __pycache__/
 
 # YOLO runs
 runs/
+
+# Dev env
+.idea/

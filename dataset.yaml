@@ -4,4 +4,3 @@ val: valid
 test: test
 nc: 3
 names: ["car", "bus", "truck"]
-
