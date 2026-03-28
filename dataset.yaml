@@ -1,0 +1,7 @@
+path: /Users/andrekocherprivat/Sites/SAR_Learning/data/data/7053442
+train: train
+val: valid
+test: test
+nc: 3
+names: ["car", "bus", "truck"]
+

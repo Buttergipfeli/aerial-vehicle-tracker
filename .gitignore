@@ -1,0 +1,15 @@
+# Project files
+data/**
+
+# Virtual environment
+venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
+
+# YOLO runs
+runs/
