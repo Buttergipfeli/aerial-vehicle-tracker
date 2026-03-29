@@ -28,7 +28,7 @@ Fine-tuning YOLO on aerial drone imagery to detect and track vehicles. Two class
 
 | Model | Classes | Epochs | mAP50 | mAP50-95 | Precision | Recall | Time | Device |
 |---|---|---|---|---|---|---|---|---|
-| YOLO26s | car/bus/truck | 18 | 0.876 | 0.551 | 0.826 | 0.841 | 8.1h | Apple M1 Pro 32GB |
+| YOLO26s | car/bus/truck | 18 | 0.876 | 0.551 | 0.826 | 0.841 | 8.1h | MacBook Pro M1 Pro 32GB |
 
 **Per class (YOLO26s, best epoch):**
 
