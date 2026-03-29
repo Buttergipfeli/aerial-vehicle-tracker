@@ -1,6 +1,6 @@
-path: /Users/andrekocherprivat/Sites/SAR_Learning/data/data/7053442
-train: train
-val: valid
-test: test
+path: /Users/andrekocherprivat/Sites/aerial-vehicle-tracker/data/data/7053442
+train: images/train
+val: images/valid
+test: images/test
 nc: 3
 names: ["car", "bus", "truck"]

@@ -14,5 +14,8 @@ __pycache__/
 # YOLO runs
 runs/
 
+# YOLO model weights
+*.pt
+
 # Dev env
 .idea/
