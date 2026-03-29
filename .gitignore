@@ -17,5 +17,8 @@ runs/
 # YOLO model weights
 *.pt
 
+# Assets
+assets/
+
 # Dev env
 .idea/
