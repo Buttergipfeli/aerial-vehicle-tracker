@@ -1,6 +1,42 @@
 # Aerial Vehicle Tracker
 
-Fine-tuning YOLO on aerial drone imagery to detect and track vehicles (car, bus, truck).
+Fine-tuning YOLO on aerial drone imagery to detect and track vehicles. Two classification approaches are compared: multi-class (car, bus, truck) and binary (vehicle / no vehicle).
+
+## Roadmap
+
+### Multi-class (car / bus / truck)
+- [x] Train YOLO26s
+- [ ] Train YOLO26m
+- [ ] Evaluate on test set
+
+### Binary (vehicle / no vehicle)
+- [ ] Train YOLO26s
+- [ ] Train YOLO26m
+- [ ] Evaluate on test set
+
+### Detection & Tracking
+- [x] Detection script (pretrained vs. fine-tuned comparison)
+- [ ] Tracking script (image sequence)
+- [ ] Tracking script (video)
+
+### Analysis
+- [ ] Notebook with results comparison (all models)
+
+## Training Results
+
+> These are validation metrics from training, not final test set evaluation.
+
+| Model | Classes | Epochs | mAP50 | mAP50-95 | Precision | Recall | Time |
+|---|---|---|---|---|---|---|---|
+| YOLO26s | car/bus/truck | 18 | 0.876 | 0.551 | 0.826 | 0.841 | 8.1h |
+
+**Per class (YOLO26s, best epoch):**
+
+| Class | mAP50 | mAP50-95 |
+|---|---|---|
+| car | 0.957 | 0.553 |
+| bus | 0.855 | 0.595 |
+| truck | 0.798 | 0.513 |
 
 ## Dataset
 
