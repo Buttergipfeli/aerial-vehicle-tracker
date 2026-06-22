@@ -16,7 +16,7 @@ Fine-tuning YOLO on aerial drone imagery to detect and track vehicles. Two class
 
 ### Detection & Tracking
 - [x] Detection script (pretrained vs. fine-tuned comparison)
-- [ ] Tracking script (image sequence)
+- [x] Tracking script (image sequence)
 - [ ] Tracking script (video)
 
 ### Analysis

@@ -4,15 +4,18 @@ from pathlib import Path
 from ultralytics import YOLO
 
 DATASET_YAML = Path(__file__).parent.parent / "dataset.yaml"
+DATASET_BINARY_YAML = Path(__file__).parent.parent / "dataset_binary.yaml"
 RUNS_DIR = Path(__file__).parent.parent / "runs" / "detect"
 
 MODEL_SIZE = "m"
+BINARY = False
 
 
-def train(model_size: str, epochs: int, imgsz: int) -> None:
+def train(model_size: str, epochs: int, imgsz: int, binary: bool = False) -> None:
+    dataset_yaml = DATASET_BINARY_YAML if binary else DATASET_YAML
     model = YOLO(f"yolo26{model_size}.pt")
     model.train(
-        data=str(DATASET_YAML),
+        data=str(dataset_yaml),
         epochs=epochs,
         imgsz=imgsz,
         device="mps",
@@ -21,13 +24,15 @@ def train(model_size: str, epochs: int, imgsz: int) -> None:
         seed=0,
         optimizer="AdamW",
         project=str(RUNS_DIR),
-        name=f"yolo26{model_size}_aerial",
+        name=f"yolo26{model_size}_{'binary' if binary else 'aerial'}",
+        cache=False,
+        single_cls=binary,
     )
 
 
 if __name__ == "__main__":
     caffeinate = subprocess.Popen(["caffeinate", "-s"])
     try:
-        train(model_size=MODEL_SIZE, epochs=18, imgsz=544)
+        train(model_size=MODEL_SIZE, epochs=18, imgsz=544, binary=BINARY)
     finally:
         caffeinate.terminate()
