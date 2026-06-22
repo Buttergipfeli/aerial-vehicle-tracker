@@ -7,8 +7,8 @@ DATASET_YAML = Path(__file__).parent.parent / "dataset.yaml"
 DATASET_BINARY_YAML = Path(__file__).parent.parent / "dataset_binary.yaml"
 RUNS_DIR = Path(__file__).parent.parent / "runs" / "detect"
 
-MODEL_SIZE = "m"
-BINARY = False
+MODEL_SIZE = "s"
+BINARY = True
 
 
 def train(model_size: str, epochs: int, imgsz: int, binary: bool = False) -> None:
