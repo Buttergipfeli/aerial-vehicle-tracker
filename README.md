@@ -7,7 +7,7 @@ Fine-tuning YOLO on aerial drone imagery to detect and track vehicles. Two class
 ### Multi-class (car / bus / truck)
 - [x] Train YOLO26s
 - [x] Train YOLO26m
-- [ ] Evaluate on test set
+- [x] Evaluate on test set
 
 ### Binary (vehicle / no vehicle)
 - [ ] Train YOLO26s
@@ -38,6 +38,23 @@ Fine-tuning YOLO on aerial drone imagery to detect and track vehicles. Two class
 | car | 0.957 | 0.553 | 0.965 | 0.575 |
 | bus | 0.855 | 0.595 | 0.854 | 0.632 |
 | truck | 0.798 | 0.513 | 0.807 | 0.544 |
+
+## Test Set Results
+
+> Multi-class evaluation on the test split with `imgsz=544` and `device=mps`.
+
+| Model | Classes | Images | Instances | mAP50 | mAP50-95 | Precision | Recall | Inference |
+|---|---|---|---|---|---|---|---|---|
+| YOLO26s | car/bus/truck | 905 | 25,691 | 0.877 | 0.555 | 0.831 | 0.834 | 10.5ms/image |
+| YOLO26m | car/bus/truck | 905 | 25,691 | 0.874 | 0.575 | 0.852 | 0.817 | 23.6ms/image |
+
+**Per class (best.pt test):**
+
+| Class | YOLO26s mAP50 | YOLO26s mAP50-95 | YOLO26m mAP50 | YOLO26m mAP50-95 |
+|---|---|---|---|---|
+| car | 0.957 | 0.549 | 0.964 | 0.570 |
+| bus | 0.862 | 0.598 | 0.855 | 0.613 |
+| truck | 0.811 | 0.518 | 0.802 | 0.543 |
 
 ## Dataset
 
