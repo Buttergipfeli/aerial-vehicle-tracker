@@ -4,6 +4,8 @@ from ultralytics import YOLO
 
 FINETUNED_S_WEIGHTS = Path(__file__).parent.parent / "runs" / "detect" / "yolo26s_aerial" / "weights" / "best.pt"
 FINETUNED_M_WEIGHTS = Path(__file__).parent.parent / "runs" / "detect" / "yolo26m_aerial" / "weights" / "best.pt"
+BINARY_S_WEIGHTS = Path(__file__).parent.parent / "runs" / "detect" / "yolo26s_binary" / "weights" / "best.pt"
+BINARY_M_WEIGHTS = Path(__file__).parent.parent / "runs" / "detect" / "yolo26m_binary" / "weights" / "best.pt"
 PRETRAINED_S_WEIGHTS = "yolo26s.pt"
 PRETRAINED_M_WEIGHTS = "yolo26m.pt"
 INPUT_DIR = Path(__file__).parent.parent / "assets" / "detect" / "input"
@@ -22,10 +24,16 @@ if __name__ == "__main__":
     output_dirs = {
         "finetuned_s": FINETUNED_S_WEIGHTS,
         "finetuned_m": FINETUNED_M_WEIGHTS,
+        "binary_s": BINARY_S_WEIGHTS,
+        "binary_m": BINARY_M_WEIGHTS,
         "pretrained_s": PRETRAINED_S_WEIGHTS,
         "pretrained_m": PRETRAINED_M_WEIGHTS,
     }
     for name, weights in output_dirs.items():
+        if isinstance(weights, Path) and not weights.exists():
+            print(f"Skipping {name}: weights not found at {weights}")
+            continue
+
         out = OUTPUT_DIR / name
         out.mkdir(parents=True, exist_ok=True)
         for ext in ("*.jpg", "*.jpeg", "*.png"):
