@@ -7,16 +7,42 @@
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <header>
+  <section id="startup">
+    <div id="startup-panel">
+      <h1>Vehicle Track Labeling</h1>
+      <div class="startup-grid">
+        <label for="startup-input-dir">Input folder</label>
+        <input id="startup-input-dir" type="text">
+        <label for="startup-confidence">Confidence</label>
+        <input id="startup-confidence" type="number" min="0" max="1" step="0.01">
+        <label for="startup-iou">IoU threshold</label>
+        <input id="startup-iou" type="number" min="0" max="1" step="0.01">
+        <label for="startup-min-frames">Min frames</label>
+        <input id="startup-min-frames" type="number" min="1" step="1">
+        <label for="startup-limit">Image limit</label>
+        <input id="startup-limit" type="number" min="1" step="1" placeholder="all">
+      </div>
+      <div class="startup-actions">
+        <button id="start-review" class="primary">Start review</button>
+        <button id="start-prelabel">Prelabel and start</button>
+        <button id="start-overwrite" class="danger">Overwrite labels and prelabel</button>
+      </div>
+      <div id="startup-status">Loading...</div>
+    </div>
+  </section>
+  <header hidden>
     <button id="previous">Previous</button>
     <button id="next" class="primary">Next</button>
     <button id="skip">Skip</button>
+    <button id="next-sequence">Next sequence</button>
     <button id="clear">Clear current</button>
+    <button id="delete-frame">Delete frame</button>
+    <button id="delete-track">Delete track</button>
     <button id="save">Not visible / Save</button>
     <button id="stop" class="danger">Stop</button>
     <div id="meta"></div>
   </header>
-  <main>
+  <main hidden>
     <div id="stage"><canvas id="canvas"></canvas></div>
     <div id="status">Loading...</div>
   </main>

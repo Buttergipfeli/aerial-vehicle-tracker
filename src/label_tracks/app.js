@@ -4,9 +4,14 @@ const stage = document.getElementById("stage");
 const statusEl = document.getElementById("status");
 const metaEl = document.getElementById("meta");
 const image = new Image();
+const startup = document.getElementById("startup");
+const startupStatus = document.getElementById("startup-status");
+const header = document.querySelector("header");
+const main = document.querySelector("main");
 
 let state = null;
 let selectedBox = null;
+let selectedTrackId = null;
 let scale = 1;
 
 async function requestJson(url, options = {}) {
@@ -17,10 +22,67 @@ async function requestJson(url, options = {}) {
   return response.json();
 }
 
+async function loadConfig() {
+  const config = await requestJson("/api/config");
+  document.getElementById("startup-input-dir").value = config.input_dir;
+  document.getElementById("startup-confidence").value = config.defaults.confidence;
+  document.getElementById("startup-iou").value = config.defaults.iou_threshold;
+  document.getElementById("startup-min-frames").value = config.defaults.min_frames;
+  document.getElementById("startup-limit").value = config.defaults.limit_images || "";
+  const labels = config.labels_exist ? `${config.track_count} existing tracks` : "no labels yet";
+  startupStatus.textContent = `${config.images} images, ${config.sequences} sequences, ${labels}.`;
+}
+
+function numberValue(id) {
+  const value = document.getElementById(id).value;
+  return value === "" ? null : Number(value);
+}
+
+function startOptions(prelabel, overwriteLabels) {
+  return {
+    input_dir: document.getElementById("startup-input-dir").value,
+    prelabel: prelabel,
+    overwrite_labels: overwriteLabels,
+    confidence: numberValue("startup-confidence"),
+    iou_threshold: numberValue("startup-iou"),
+    min_frames: numberValue("startup-min-frames"),
+    limit_images: numberValue("startup-limit"),
+  };
+}
+
+async function startApp(prelabel, overwriteLabels) {
+  setStartupBusy(true);
+  startupStatus.textContent = prelabel ? "Prelabeling..." : "Starting...";
+  try {
+    state = await requestJson("/api/start", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(startOptions(prelabel, overwriteLabels)),
+    });
+    selectedBox = activeSelection();
+    selectedTrackId = null;
+    await loadImage(state.image.url);
+    startup.hidden = true;
+    header.hidden = false;
+    main.hidden = false;
+    draw();
+  } catch (error) {
+    startupStatus.textContent = error.message;
+    setStartupBusy(false);
+  }
+}
+
+function setStartupBusy(busy) {
+  document.getElementById("start-review").disabled = busy;
+  document.getElementById("start-prelabel").disabled = busy;
+  document.getElementById("start-overwrite").disabled = busy;
+}
+
 async function loadState(index = null) {
   const suffix = index === null ? "" : `?index=${index}`;
   state = await requestJson(`/api/state${suffix}`);
   selectedBox = activeSelection();
+  selectedTrackId = null;
   await loadImage(state.image.url);
   draw();
 }
@@ -80,14 +142,17 @@ function draw() {
   context.clearRect(0, 0, image.naturalWidth, image.naturalHeight);
   context.drawImage(image, 0, 0);
 
-  state.saved.forEach((item) => {
-    drawBox(item.bbox, item.active ? "#ffd84d" : "#4db6ff", item.active ? "active" : `saved ${item.track_id}`, 4);
-  });
   state.boxes.forEach((box, index) => {
     drawBox(box.bbox, index === selectedBox ? "#ff4d4d" : "#33d17a", `${index} ${box.confidence.toFixed(2)}`, index === selectedBox ? 4 : 2);
   });
+  state.saved.forEach((item) => {
+    const selected = item.track_id === selectedTrackId;
+    const color = selected ? "#ff4dff" : item.active ? "#ffd84d" : "#4db6ff";
+    const label = item.active ? "active" : `track ${item.track_id}`;
+    drawBox(item.bbox, color, label, selected ? 5 : 4);
+  });
 
-  metaEl.textContent = `${state.index + 1}/${state.total} ${state.image.name}`;
+  metaEl.textContent = `${state.index + 1}/${state.total} | sequence ${state.sequence.index}/${state.sequence.total}: ${state.sequence.name} | ${state.image.path}`;
   statusEl.textContent = `${state.status} Detections: ${state.boxes.length}. Active labels: ${state.active_count}. Saved tracks: ${state.saved_count}.`;
 }
 
@@ -105,9 +170,24 @@ canvas.addEventListener("click", (event) => {
   const rect = canvas.getBoundingClientRect();
   const x = (event.clientX - rect.left) / scale;
   const y = (event.clientY - rect.top) / scale;
-  selectedBox = pickBox(x, y);
+  selectedTrackId = pickSavedTrack(x, y);
+  selectedBox = selectedTrackId === null ? pickBox(x, y) : null;
   draw();
 });
+
+function pickSavedTrack(x, y) {
+  const containing = [];
+  state.saved.forEach((item) => {
+    if (item.active) {
+      return;
+    }
+    const [x1, y1, x2, y2] = item.bbox;
+    if (x >= x1 && x <= x2 && y >= y1 && y <= y2) {
+      containing.push([(x2 - x1) * (y2 - y1), item.track_id]);
+    }
+  });
+  return containing.length ? containing.sort((a, b) => a[0] - b[0])[0][1] : null;
+}
 
 function pickBox(x, y) {
   const containing = [];
@@ -139,8 +219,17 @@ async function action(name, extra = {}) {
     body,
   });
   selectedBox = activeSelection();
+  selectedTrackId = null;
   await loadImage(state.image.url);
   draw();
+}
+
+async function selectedTrackAction(name) {
+  if (selectedTrackId === null) {
+    statusEl.textContent = "Select a saved track first.";
+    return;
+  }
+  await action(name, { track_id: selectedTrackId });
 }
 
 async function stopApp() {
@@ -160,8 +249,14 @@ async function stopApp() {
 }
 
 document.getElementById("previous").onclick = () => action("previous");
+document.getElementById("start-review").onclick = () => startApp(false, false);
+document.getElementById("start-prelabel").onclick = () => startApp(true, false);
+document.getElementById("start-overwrite").onclick = () => startApp(true, true);
 document.getElementById("skip").onclick = () => action("skip");
+document.getElementById("next-sequence").onclick = () => action("next_sequence");
 document.getElementById("clear").onclick = () => action("clear");
+document.getElementById("delete-frame").onclick = () => selectedTrackAction("delete_frame");
+document.getElementById("delete-track").onclick = () => selectedTrackAction("delete_track");
 document.getElementById("save").onclick = () => action("save");
 document.getElementById("stop").onclick = () => stopApp();
 document.getElementById("next").onclick = () => {
@@ -178,6 +273,6 @@ window.addEventListener("resize", () => {
   }
 });
 
-loadState().catch((error) => {
-  statusEl.textContent = error.message;
+loadConfig().catch((error) => {
+  startupStatus.textContent = error.message;
 });
