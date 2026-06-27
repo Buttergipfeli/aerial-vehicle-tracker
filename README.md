@@ -12,7 +12,7 @@ Fine-tuning YOLO on aerial drone imagery to detect and track vehicles. Two class
 ### Binary (vehicle / no vehicle)
 - [x] Train YOLO26s
 - [x] Train YOLO26m
-- [ ] Evaluate on test set
+- [x] Evaluate on test set
 
 ### Detection & Tracking
 - [x] Detection script (pretrained vs. fine-tuned comparison)
@@ -50,20 +50,29 @@ Fine-tuning YOLO on aerial drone imagery to detect and track vehicles. Two class
 
 ## Test Set Results
 
-> Multi-class evaluation on the test split with `imgsz=544` and `device=mps`.
+> Evaluation on the test split with `imgsz=544` and `device=mps`.
 
 | Model | Classes | Images | Instances | mAP50 | mAP50-95 | Precision | Recall | Inference |
 |---|---|---|---|---|---|---|---|---|
-| YOLO26s | car/bus/truck | 905 | 25,691 | 0.877 | 0.555 | 0.831 | 0.834 | 10.5ms/image |
-| YOLO26m | car/bus/truck | 905 | 25,691 | 0.874 | 0.575 | 0.852 | 0.817 | 23.6ms/image |
+| YOLO26s | car/bus/truck | 905 | 25,691 | 0.877 | 0.555 | 0.831 | 0.834 | 10.6ms/image |
+| YOLO26m | car/bus/truck | 905 | 25,691 | 0.874 | 0.575 | 0.852 | 0.817 | 20.2ms/image |
+| YOLO26s | vehicle | 905 | 25,691 | 0.962 | 0.565 | 0.946 | 0.944 | 8.1ms/image |
+| YOLO26m | vehicle | 905 | 25,691 | 0.969 | 0.577 | 0.955 | 0.955 | 18.7ms/image |
 
-**Per class (best.pt test):**
+**Per class (multi-class best.pt test):**
 
 | Class | YOLO26s mAP50 | YOLO26s mAP50-95 | YOLO26m mAP50 | YOLO26m mAP50-95 |
 |---|---|---|---|---|
 | car | 0.957 | 0.549 | 0.964 | 0.570 |
 | bus | 0.862 | 0.598 | 0.855 | 0.613 |
 | truck | 0.811 | 0.518 | 0.802 | 0.543 |
+
+**Binary class (best.pt test):**
+
+| Model | Class | mAP50 | mAP50-95 |
+|---|---|---|---|
+| YOLO26s | vehicle | 0.962 | 0.565 |
+| YOLO26m | vehicle | 0.969 | 0.577 |
 
 ## Dataset
 
