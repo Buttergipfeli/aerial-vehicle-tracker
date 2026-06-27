@@ -6,8 +6,14 @@ from ultralytics import YOLO
 
 ROOT = Path(__file__).resolve().parent.parent
 DATASET_YAML = ROOT / "dataset.yaml"
+DATASET_BINARY_YAML = ROOT / "dataset_binary.yaml"
 RUNS_DIR = ROOT / "runs" / "detect"
-MODEL_NAMES = ("yolo26s_aerial", "yolo26m_aerial")
+MODELS = (
+    ("yolo26s_aerial", DATASET_YAML),
+    ("yolo26m_aerial", DATASET_YAML),
+    ("yolo26s_binary", DATASET_BINARY_YAML),
+    ("yolo26m_binary", DATASET_BINARY_YAML),
+)
 
 DEVICE = "mps"
 IMGSZ = 544
@@ -15,17 +21,17 @@ SPLIT = "test"
 CACHE = False
 
 
-def evaluate(model_name: str) -> None:
+def evaluate(model_name: str, dataset_yaml: Path) -> None:
     weights = RUNS_DIR / model_name / "weights" / "best.pt"
 
-    if not DATASET_YAML.exists():
-        raise FileNotFoundError(f"Dataset YAML not found: {DATASET_YAML}")
+    if not dataset_yaml.exists():
+        raise FileNotFoundError(f"Dataset YAML not found: {dataset_yaml}")
     if not weights.exists():
         raise FileNotFoundError(f"Weights not found: {weights}")
 
     model = YOLO(str(weights))
     metrics = model.val(
-        data=str(DATASET_YAML),
+        data=str(dataset_yaml),
         split=SPLIT,
         device=DEVICE,
         imgsz=IMGSZ,
@@ -51,5 +57,5 @@ def evaluate(model_name: str) -> None:
 
 
 if __name__ == "__main__":
-    for name in MODEL_NAMES:
-        evaluate(name)
+    for name, data in MODELS:
+        evaluate(name, data)
