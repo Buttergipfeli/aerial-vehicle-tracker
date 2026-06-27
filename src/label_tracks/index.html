@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vehicle Track Labeling</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header>
+    <button id="previous">Previous</button>
+    <button id="next" class="primary">Next</button>
+    <button id="skip">Skip</button>
+    <button id="clear">Clear current</button>
+    <button id="save">Not visible / Save</button>
+    <button id="stop" class="danger">Stop</button>
+    <div id="meta"></div>
+  </header>
+  <main>
+    <div id="stage"><canvas id="canvas"></canvas></div>
+    <div id="status">Loading...</div>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>
