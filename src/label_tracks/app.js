@@ -143,11 +143,27 @@ async function action(name, extra = {}) {
   draw();
 }
 
+async function stopApp() {
+  try {
+    state = await requestJson("/api/action", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "stop" }),
+    });
+    statusEl.textContent = state.status;
+  } finally {
+    window.close();
+    setTimeout(() => {
+      statusEl.textContent = "Server stopped. You can close this tab.";
+    }, 300);
+  }
+}
+
 document.getElementById("previous").onclick = () => action("previous");
 document.getElementById("skip").onclick = () => action("skip");
 document.getElementById("clear").onclick = () => action("clear");
 document.getElementById("save").onclick = () => action("save");
-document.getElementById("stop").onclick = () => action("stop");
+document.getElementById("stop").onclick = () => stopApp();
 document.getElementById("next").onclick = () => {
   if (selectedBox === null) {
     statusEl.textContent = "Select a vehicle first, or use Skip.";
