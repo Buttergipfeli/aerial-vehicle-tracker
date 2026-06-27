@@ -11,7 +11,7 @@ Fine-tuning YOLO on aerial drone imagery to detect and track vehicles. Two class
 
 ### Binary (vehicle / no vehicle)
 - [x] Train YOLO26s
-- [ ] Train YOLO26m
+- [x] Train YOLO26m
 - [ ] Evaluate on test set
 
 ### Detection & Tracking
@@ -31,6 +31,7 @@ Fine-tuning YOLO on aerial drone imagery to detect and track vehicles. Two class
 | YOLO26s | car/bus/truck | 18 | 0.876 | 0.551 | 0.826 | 0.841 | 8.1h | MacBook Pro M1 Pro 32GB |
 | YOLO26m | car/bus/truck | 18 | 0.875 | 0.583 | 0.874 | 0.802 | 14.6h | MacBook Pro M1 Pro 32GB |
 | YOLO26s | vehicle | 18 | 0.966 | 0.570 | 0.953 | 0.945 | 9.0h | MacBook Pro M1 Pro 32GB |
+| YOLO26m | vehicle | 18 | 0.972 | 0.582 | 0.962 | 0.958 | 13.2h | MacBook Pro M1 Pro 32GB |
 
 **Per class (multi-class best.pt validation):**
 
@@ -45,6 +46,7 @@ Fine-tuning YOLO on aerial drone imagery to detect and track vehicles. Two class
 | Model | Class | mAP50 | mAP50-95 |
 |---|---|---|---|
 | YOLO26s | vehicle | 0.966 | 0.570 |
+| YOLO26m | vehicle | 0.972 | 0.582 |
 
 ## Test Set Results
 
